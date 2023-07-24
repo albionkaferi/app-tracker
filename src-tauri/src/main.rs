@@ -4,6 +4,8 @@
 mod track;
 use std::thread;
 use track::track_processes;
+use std::sync::{Arc, Mutex};
+use std::collections::HashMap;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -12,8 +14,20 @@ fn greet(name: &str) -> String {
 }
 
 fn main() {
+    /*
+    * data is the hash map that stores the data for the processes we will regulate
+    * key: process name
+    * value: array of values [previous run time, current run time, allowed run time]
+    */
+    let data = Arc::new(Mutex::new(HashMap::new()));
+
+    // lock the hash map, unwrap, and insert <- this is for testing; will be removed later
+    data.lock().unwrap().insert(String::from("mspaint.exe"), [0, 0, 90]);
+
+    // create a clone of the hash map and create a new thread that runs the tracking loop
+    let data_clone = Arc::clone(&data);
     thread::spawn(move || {
-        track_processes();
+        track_processes(data_clone);
     });
 
     tauri::Builder::default()

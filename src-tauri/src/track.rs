@@ -3,16 +3,10 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 use std::time::Duration;
 use std::thread;
+use std::sync::{Arc, Mutex};
 
-pub fn track_processes() {
-
-    /*
-    * data is a hash map for storing which application to regulate
-    * key: application name
-    * value: array of times representing [past run time, current run time, allowed run time]
-    */
-    let mut data = HashMap::new();
-    /*
+pub fn track_processes(data: Arc<Mutex<HashMap<String, [u64; 3]>>>) {
+    /* 
     * visited is used to keep track of which processes are visited when iterating through the list of processes
     * this prevents duplicate operations for processes with the same name
     */
@@ -23,9 +17,6 @@ pub fn track_processes() {
     * used to check if a previously opened process process is still running
     */
     let mut open = HashSet::new();
-
-    
-    data.insert(String::from("mspaint.exe"), [0, 0, 90]);
     
     let mut sys = System::new_all();
 
@@ -35,6 +26,8 @@ pub fn track_processes() {
         
         // iterate through all the processes
         for (pid, process) in sys.processes() {
+            // lock access to the hash map and unwrap it
+            let mut data = data.lock().unwrap();
             // if the process is one we want to track and it hasn't been visited already
             if data.contains_key(process.name()) && !visited.contains(process.name()) {
 
@@ -61,6 +54,8 @@ pub fn track_processes() {
         let open_clone = open.clone();
         for process in &open_clone {
             if !visited.contains(process) {
+                // lock access to the hash map and unwrap it
+                let mut data = data.lock().unwrap();
                 let time_array = match data.get_mut(process) {
                     Some(array) => array,
                     None => continue
