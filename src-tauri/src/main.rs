@@ -19,8 +19,6 @@ lazy_static! {
     static ref DATA: Arc<Mutex<HashMap<String, [u64; 3]>>> = Arc::new(Mutex::new(HashMap::new()));
 }
 
-
-// TODO: return messages for the frontend to read ("success", "already added", etc)
 #[tauri::command(rename_all = "snake_case")]
 fn add_app(name: &str, allowed_time: u64) -> String {
     let mut data = DATA.lock().unwrap();
@@ -29,7 +27,6 @@ fn add_app(name: &str, allowed_time: u64) -> String {
     return format!("Successfully added process {}", name);
 }
 
-// TODO: return messages
 #[tauri::command(rename_all = "snake_case")]
 fn remove_app(name: &str) -> String {
     let mut data = DATA.lock().unwrap();
@@ -37,6 +34,14 @@ fn remove_app(name: &str) -> String {
     data.remove(name);
     return format!("Successfully removed process {}", name);
 }
+
+#[tauri::command(rename_all = "snake_case")]
+fn retrieve_data() -> Vec<(String, [u64; 3])> {
+    let data = DATA.lock().unwrap();
+    let array: Vec<(String, [u64; 3])> = data.clone().into_iter().collect();
+    return array;
+}
+
 
 fn main() {
 
@@ -47,7 +52,7 @@ fn main() {
     });
 
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![add_app, remove_app])
+        .invoke_handler(tauri::generate_handler![add_app, remove_app, retrieve_data])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

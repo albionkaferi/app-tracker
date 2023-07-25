@@ -1,11 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
+import React from "react";
 import "./App.css";
+import { ListItem, Divider, List, ListItemText, Checkbox, ListItemIcon } from '@mui/material';
 
 function App() {
   const [name, setName] = useState("");
   const [allowed, setAllowed] = useState(0);
   const [status, setStatus] = useState("");
+  const [list, setList] = useState<string[]>([]);
+
+  useEffect(() => {
+      invoke("retrieve_data").then((res) => {
+        setList(res as string[]);
+      });
+    }, [add_app, remove_app]);
 
   async function add_app() {
     setStatus(await invoke("add_app", { name: name, allowed_time: allowed }));
@@ -54,6 +63,26 @@ function App() {
         <button type="submit">Remove</button>
       </form>
       <p>{status}</p>
+
+      <List sx={{ width: '100%', maxWidth: 360 }}>
+        {list.map((value) => (
+          console.log(value),
+          <React.Fragment key={value}>
+            <ListItem>
+              <ListItemIcon>
+                <Checkbox
+                  edge="start"
+                  tabIndex={-1}
+                  disableRipple
+                  inputProps={{ 'aria-labelledby': `checkbox-list-label-${value}` }}
+                />
+              </ListItemIcon>
+              <ListItemText primary={`${value}`} />
+            </ListItem>
+            <Divider />
+          </React.Fragment>
+        ))}
+      </List>
     </>
   );
 }
