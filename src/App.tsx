@@ -5,17 +5,18 @@ import "./App.css";
 function App() {
   const [name, setName] = useState("");
   const [allowed, setAllowed] = useState(0);
+  const [status, setStatus] = useState("");
 
   async function add_app() {
-    await invoke("add_app", { name: name, allowed_time: allowed });
+    setStatus(await invoke("add_app", { name: name, allowed_time: allowed }));
   }
 
   async function remove_app() {
-    await invoke("remove_app", {name});
+    setStatus(await invoke("remove_app", {name}));
   }
 
   return (
-      <>
+    <>
       <form
         className="row"
         onSubmit={(e) => {
@@ -50,8 +51,9 @@ function App() {
           onChange={(e) => setName(e.currentTarget.value)}
           placeholder="Enter a name..."
         />
-        <button type="submit">Add</button>
+        <button type="submit">Remove</button>
       </form>
+      <p>{status}</p>
     </>
   );
 }

@@ -22,18 +22,20 @@ lazy_static! {
 
 // TODO: return messages for the frontend to read ("success", "already added", etc)
 #[tauri::command(rename_all = "snake_case")]
-fn add_app(name: &str, allowed_time: u64) {
+fn add_app(name: &str, allowed_time: u64) -> String {
     let mut data = DATA.lock().unwrap();
-    if data.contains_key(name) { return };
+    if data.contains_key(name) { return format!("Error: {} already added", name) }
     data.insert(String::from(name), [0, 0, allowed_time]);
+    return format!("Successfully added process {}", name);
 }
 
 // TODO: return messages
 #[tauri::command(rename_all = "snake_case")]
-fn remove_app(name: &str) {
+fn remove_app(name: &str) -> String {
     let mut data = DATA.lock().unwrap();
-    if !data.contains_key(name) { return };
+    if !data.contains_key(name) { return format!("Error: {} not in our system", name) }
     data.remove(name);
+    return format!("Successfully removed process {}", name);
 }
 
 fn main() {
