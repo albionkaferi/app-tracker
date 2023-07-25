@@ -20,7 +20,7 @@ function App() {
     setStatus(await invoke("add_app", { name: name, allowed_time: allowed }));
   }
 
-  async function remove_app() {
+  async function remove_app(name: String) {
     setStatus(await invoke("remove_app", {name}));
   }
 
@@ -46,22 +46,6 @@ function App() {
         />
         <button type="submit">Add</button>
       </form>
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          remove_app();
-          console.log("Form submitted");
-        }}
-      >
-        <input
-          id="name-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Remove</button>
-      </form>
       <p>{status}</p>
 
       <List sx={{ width: '100%' }}>
@@ -74,15 +58,19 @@ function App() {
             <React.Fragment key={process}>
               <ListItem>
                 <ListItemIcon>
-                  <Checkbox
-                    edge="start"
-                    tabIndex={-1}
-                    disableRipple
-                    inputProps={{ 'aria-labelledby': `checkbox-list-label-${name}` }} 
-                  />
+                  <Checkbox/>
                 </ListItemIcon>
                 <ListItemText primary={`${name}`} />
                 <ListItemText primary={`Today: ${past + curr}/${allowed}`} />
+                <form
+                  className="row"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    remove_app(name);
+                  }}
+                >
+                  <button type="submit">Remove</button>
+                </form>
               </ListItem>
               <Divider />
             </React.Fragment>
