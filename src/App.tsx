@@ -3,6 +3,8 @@ import { invoke } from "@tauri-apps/api/tauri";
 import React from "react";
 import "./App.css";
 import { ListItem, Divider, List, ListItemText, Checkbox, ListItemIcon } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 
 function App() {
   const [name, setName] = useState("");
@@ -22,6 +24,10 @@ function App() {
 
   async function remove_app(name: String) {
     setStatus(await invoke("remove_app", {name}));
+  }
+
+  async function edit_app(name: String) {
+    console.log("This is temporary", name);
   }
 
   return (
@@ -62,7 +68,8 @@ function App() {
                 </ListItemIcon>
                 <ListItemText primary={`${name}`} />
                 <ListItemText primary={`Today: ${past + curr}/${allowed}`} />
-                <button type="submit" onClick={() => remove_app(name)}>Remove</button>
+                <button type="submit" onClick={() => remove_app(name)}><DeleteIcon fontSize="small"/></button>
+                <button type="submit" onClick={() => edit_app(name)}><ModeEditIcon fontSize="small"/></button>
               </ListItem>
               <Divider />
             </React.Fragment>
