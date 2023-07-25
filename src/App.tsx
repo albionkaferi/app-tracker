@@ -65,23 +65,29 @@ function App() {
       <p>{status}</p>
 
       <List sx={{ width: '100%' }}>
-        {list.map((value) => (
-          console.log(value),
-          <React.Fragment key={value}>
-            <ListItem>
-              <ListItemIcon>
-                <Checkbox
-                  edge="start"
-                  tabIndex={-1}
-                  disableRipple
-                  inputProps={{ 'aria-labelledby': `checkbox-list-label-${value}` }}
-                />
-              </ListItemIcon>
-              <ListItemText primary={`${value}`} />
-            </ListItem>
-            <Divider />
-          </React.Fragment>
-        ))}
+        {list.map((process) => {
+          const name = process[0];
+          const past = process[1][0];
+          const curr = process[1][1];
+          const allowed = process[1][2];
+          return (
+            <React.Fragment key={process}>
+              <ListItem>
+                <ListItemIcon>
+                  <Checkbox
+                    edge="start"
+                    tabIndex={-1}
+                    disableRipple
+                    inputProps={{ 'aria-labelledby': `checkbox-list-label-${name}` }} 
+                  />
+                </ListItemIcon>
+                <ListItemText primary={`${name}`} />
+                <ListItemText primary={`Today: ${past + curr}/${allowed}`} />
+              </ListItem>
+              <Divider />
+            </React.Fragment>
+          );
+        })}
       </List>
     </>
   );
