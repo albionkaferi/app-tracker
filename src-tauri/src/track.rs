@@ -50,7 +50,7 @@ pub fn track_processes(data: Arc<Mutex<HashMap<String, [u64; 3]>>>) {
             }
         }
 
-        // handle closing an application
+        // handle when an app is closed by the user
         let open_clone = open.clone();
         for process in &open_clone {
             if !visited.contains(process) {
