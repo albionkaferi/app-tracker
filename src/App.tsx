@@ -64,7 +64,7 @@ function App() {
       </form>
       <p>{status}</p>
 
-      <List sx={{ width: '100%', maxWidth: 360 }}>
+      <List sx={{ width: '100%' }}>
         {list.map((value) => (
           console.log(value),
           <React.Fragment key={value}>
@@ -77,7 +77,7 @@ function App() {
                   inputProps={{ 'aria-labelledby': `checkbox-list-label-${value}` }}
                 />
               </ListItemIcon>
-              <ListItemText primary={`${value[0]}`} />
+              <ListItemText primary={`${value}`} />
             </ListItem>
             <Divider />
           </React.Fragment>
