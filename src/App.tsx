@@ -77,7 +77,7 @@ function App() {
                   inputProps={{ 'aria-labelledby': `checkbox-list-label-${value}` }}
                 />
               </ListItemIcon>
-              <ListItemText primary={`${value}`} />
+              <ListItemText primary={`${value[0]}`} />
             </ListItem>
             <Divider />
           </React.Fragment>
