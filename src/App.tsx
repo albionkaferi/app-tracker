@@ -62,15 +62,7 @@ function App() {
                 </ListItemIcon>
                 <ListItemText primary={`${name}`} />
                 <ListItemText primary={`Today: ${past + curr}/${allowed}`} />
-                <form
-                  className="row"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    remove_app(name);
-                  }}
-                >
-                  <button type="submit">Remove</button>
-                </form>
+                <button type="submit" onClick={() => remove_app(name)}>Remove</button>
               </ListItem>
               <Divider />
             </React.Fragment>
