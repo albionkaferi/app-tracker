@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
-import React from "react";
 import "./App.css";
-import { ListItem, Divider, List, ListItemText, Checkbox, ListItemIcon, IconButton } from '@mui/material';
+import { IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
-import { Button, Input, TimePicker, Progress } from 'antd';
+import { Button, Input, TimePicker, Progress, Space, Table } from 'antd';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import type { ColumnsType } from 'antd/es/table';
 
 
 function App() {
@@ -17,12 +17,33 @@ function App() {
   const [status, setStatus] = useState("");
   const [list, setList] = useState<string[]>([]);
 
+  interface DataType {
+    key: string;
+    name: string;
+    total: string;
+    allowed: string;
+    progress: number;
+  }
+
   useEffect(() => {
       invoke("retrieve_data").then((res) => {
         setList(res as string[]);
       });
     }, [add_app, remove_app]);
 
+  function processToObject(list: string[]) {
+    return list.map((process) => {
+      const total = (process[1][0] + process[1][1] < process[1][2]) ? process[1][0] + process[1][1] :  process[1][2];
+      const allowed = process[1][2];
+      return {
+        key: process[0],
+        name: process[0],
+        total: total,
+        allowed: allowed,
+        progress: Math.trunc(Number(total) / Number(allowed) * 100),
+      }
+    })
+  }
 
   async function add_app() {
     setStatus(await invoke("add_app", { name: name, allowed_time: allowed }));
@@ -73,6 +94,53 @@ function App() {
     }
   };
 
+  const columns: ColumnsType<DataType> = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      render: (text) => <a>{text}</a>,
+    },
+    {
+      title: 'Total',
+      dataIndex: 'total',
+      align: 'center',
+      key: 'total',
+    },
+    {
+      title: 'Allowed',
+      dataIndex: 'allowed',
+      align: 'center',
+      key: 'allowed',
+    },
+    {
+      title: 'Progress',
+      dataIndex: 'progress',      
+      align: 'center',
+      key: 'progress',
+      render: (progress: number) => (
+        <Progress
+          type="circle"
+          size={40}
+          style={{ width: "85%", margin: "auto", paddingBottom: "0", paddingTop: "0"}}
+          percent={progress} status="active" 
+          strokeColor={strokeColor(progress)} 
+        />
+      ),
+    },
+    {
+      title: 'Actions',
+      align: 'center',
+      key: 'action',
+      render: (_, record: DataType) => (
+        <Space size="middle">
+          <IconButton type="submit" onClick={() => edit_app(record.name)}><ModeEditIcon fontSize="small"/></IconButton>
+          <IconButton type="submit" onClick={() => remove_app(record.name)}><DeleteIcon fontSize="small"/></IconButton>
+        </Space>
+      ),
+    },
+  ];
+
   return (
     <>
       <form
@@ -94,40 +162,15 @@ function App() {
           id="time-picker"
           onChange={getSeconds}
         />
-        <Button type="default" htmlType="submit">Add</Button>
+        <Button
+        type="default" 
+        htmlType="submit">Add</Button>
       </form>
       <p>{status}</p>
       <hr />
-      <List sx={{ width: '100%' }}>
-        {list.map((process) => {
-          const name = process[0];
-          const past = process[1][0];
-          const curr = process[1][1];
-          const allowed = process[1][2];
-          const total = (past + curr < allowed) ? past + curr : allowed;
-          const percent = Math.trunc(Number(total) / Number(allowed) * 100);
-          return (
-            <React.Fragment key={process}>
-              <ListItem
-              style={{ paddingBottom: "0"}}
-              >
-                <ListItemText primary={`${name}`} />
-                <ListItemText primary={`Today: ${total}/${allowed}`} />
-                <IconButton type="submit" onClick={() => edit_app(name)}><ModeEditIcon fontSize="small"/></IconButton>
-                <IconButton type="submit" onClick={() => remove_app(name)}><DeleteIcon fontSize="small"/></IconButton>
-              </ListItem>
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <Progress 
-                  style={{ width: "85%", margin: "auto", paddingBottom: "8px"}}
-                  percent={percent} status="active" 
-                  strokeColor={strokeColor(percent)} 
-                />
-              </div>
-              <Divider />
-            </React.Fragment>
-          );
-        })}
-      </List>
+
+      <Table columns={columns} dataSource={processToObject(list)} />
+
     </>
   );
 }
