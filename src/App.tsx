@@ -170,7 +170,7 @@ function App() {
         type="default" 
         htmlType="submit">Add</Button>
       </form>
-      <p>{status}</p>
+      <p style={{ textAlign: "center" }}>{status}</p>
       <hr />
 
       <Table columns={columns} dataSource={processToObject(list)} pagination={{ pageSize: 5}}/>
