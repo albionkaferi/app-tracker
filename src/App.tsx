@@ -99,7 +99,7 @@ function App() {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      render: (text) => <a>{text}</a>,
+      render: (text) => <strong>{text}</strong>,
       sorter: (a: DataType, b: DataType) => a.name.localeCompare(b.name)
     },
     {
