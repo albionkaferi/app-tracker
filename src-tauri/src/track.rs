@@ -36,11 +36,11 @@ pub fn track_processes(data: Arc<Mutex<HashMap<String, [u64; 3]>>>) {
                     None => continue
                 };
                 let allowed_time = time_array[2];
-                time_array[1] = process.run_time();
                 let curr_time = time_array[1];
                 let past_time = time_array[0];
+                time_array[1] = process.run_time();
                 // end the process if its total time is greater than its allowed time
-                if past_time + curr_time > allowed_time {
+                if past_time + curr_time >= allowed_time {
                     process.kill();
                 } else {
                     println!("PID: {} | Name: {} | Past Time {} | Current Time: {} | Allowed Time: {}", pid, process.name(), past_time, curr_time, allowed_time);
