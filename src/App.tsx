@@ -100,24 +100,28 @@ function App() {
       dataIndex: 'name',
       key: 'name',
       render: (text) => <a>{text}</a>,
+      sorter: (a: DataType, b: DataType) => a.name.localeCompare(b.name)
     },
     {
       title: 'Total',
       dataIndex: 'total',
       align: 'center',
       key: 'total',
+      sorter: (a: DataType, b: DataType) => Number(a.total) - Number(b.total),
     },
     {
       title: 'Allowed',
       dataIndex: 'allowed',
       align: 'center',
       key: 'allowed',
+      sorter: (a: DataType, b: DataType) => Number(a.allowed) - Number(b.allowed),
     },
     {
       title: 'Progress',
       dataIndex: 'progress',      
       align: 'center',
       key: 'progress',
+      sorter: (a: DataType, b: DataType) => Number(a.progress) - Number(b.progress),
       render: (progress: number) => (
         <Progress
           type="circle"
@@ -169,7 +173,7 @@ function App() {
       <p>{status}</p>
       <hr />
 
-      <Table columns={columns} dataSource={processToObject(list)} />
+      <Table columns={columns} dataSource={processToObject(list)} pagination={{ pageSize: 5}}/>
 
     </>
   );
