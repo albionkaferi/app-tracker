@@ -29,7 +29,6 @@ function App() {
   return (
     <>
       <AddModal add_app={add_app}/>
-      <p>{status}</p>
       <hr />
       <AppList list={list} edit_app={edit_app} remove_app={remove_app}/>
     </>
