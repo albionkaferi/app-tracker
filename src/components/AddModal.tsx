@@ -3,6 +3,7 @@ import { Button, Modal, Input, TimePicker } from 'antd';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import TimeInput from "./TimeInput";
 
 dayjs.extend(customParseFormat);
 
@@ -57,11 +58,7 @@ function AddModal({add_app}: {add_app: (name: String, allowed: number) => Promis
           onChange={(e) => setName(e.currentTarget.value)}
           placeholder="App name..."
         />
-        <TimePicker
-          style={{ width: '22%', margin: '0px 10px 0px 10px'}} 
-          id="time-picker"
-          onChange={getSeconds}
-        />
+        <TimeInput setAllowed={setAllowed}/>
         <Button
         type="default" 
         htmlType="submit">Add</Button>
