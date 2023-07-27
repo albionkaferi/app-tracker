@@ -1,10 +1,6 @@
 import { useState } from "react";
 import { Button, Modal, Input, message } from 'antd';
-import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
 import TimeInput from "./TimeInput";
-
-dayjs.extend(customParseFormat);
 
 function AddModal({add_app}: {add_app: (name: String, allowed: number) => Promise<unknown>}) {
     const [open, setOpen] = useState(false);  
@@ -52,17 +48,10 @@ function AddModal({add_app}: {add_app: (name: String, allowed: number) => Promis
         Add Application
       </Button>
       <Modal
-        open={open}
-        title="Add Application"
-        onCancel={closeModal}
-        footer={[]}>
-        <form
-          className="row"
-          onSubmit={(e) => {
-            e.preventDefault();
-            add_app(name, allowed);
-            console.log("Form submitted");
-          }}>
+      open={open}
+      title="Add Application"
+      onCancel={closeModal}
+      footer={[]}>
         <Input
           style={{ width: '30%' }}
           id="name-input"
@@ -71,12 +60,13 @@ function AddModal({add_app}: {add_app: (name: String, allowed: number) => Promis
           placeholder="App name..."
         />
         <TimeInput setAllowed={setAllowed}/>
-          {contextHolder}
-          <Button
-            type="default" 
-            htmlType="submit"
-            onClick={onClickHandler}>Add</Button>
-        </form>
+        {contextHolder}
+        <Button
+          type="default" 
+          htmlType="submit"
+          onClick={onClickHandler}>
+            Add
+        </Button>
       </Modal>
       </>
     );

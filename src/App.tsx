@@ -22,8 +22,8 @@ function App() {
     return await invoke("remove_app", {name});
   }
 
-  async function edit_app(name: String) {
-    console.log("This is temporary", name);
+  async function edit_app(name: String, allowed: number) {
+    return await invoke("edit_app", {name: name, allowed_time: allowed});
   }
 
   return (

@@ -26,8 +26,8 @@ export const strokeColor = (percent: number) => {
 
 export function processToObject(list: string[]) {
     return list.map((process) => {
-        const total = (process[1][0] + process[1][1] < process[1][2]) ? process[1][0] + process[1][1] :  process[1][2];
-        const allowed = process[1][2];
+        const total: string = (process[1][0] + process[1][1] < process[1][2]) ? process[1][0] + process[1][1] :  process[1][2];
+        const allowed: string = process[1][2];
         return {
         key: process[0],
         name: process[0],

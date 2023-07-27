@@ -35,6 +35,21 @@ fn remove_app(name: &str) -> String {
 }
 
 #[tauri::command(rename_all = "snake_case")]
+fn edit_app(name: &str, allowed_time: u64) -> String {
+    let mut data = DATA.lock().unwrap();
+    let time_array = match data.get_mut(name) {
+        Some(array) => array,
+        None => return format!("Error: internal error.")
+    };
+    let total = time_array[0] + time_array[1];
+    if allowed_time < total {
+        return format!("Error: allowed time cannot be under current usage time ({}s).", total)
+    } 
+    time_array[2] = allowed_time;
+    return format!("Success: allowed time for {} updated to {}", name, allowed_time);
+}
+
+#[tauri::command(rename_all = "snake_case")]
 fn retrieve_data() -> Vec<(String, [u64; 3])> {
     let data = DATA.lock().unwrap();
     let array: Vec<(String, [u64; 3])> = data.clone().into_iter().collect();
@@ -51,7 +66,7 @@ fn main() {
     });
 
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![add_app, remove_app, retrieve_data])
+        .invoke_handler(tauri::generate_handler![add_app, remove_app, edit_app, retrieve_data])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
