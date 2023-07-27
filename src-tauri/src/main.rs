@@ -22,17 +22,16 @@ lazy_static! {
 #[tauri::command(rename_all = "snake_case")]
 fn add_app(name: &str, allowed_time: u64) -> String {
     let mut data = DATA.lock().unwrap();
-    if data.contains_key(name) { return format!("Error: {} already added", name) }
+    if data.contains_key(name) { return format!("Error: {} is already added.", name) }
     data.insert(String::from(name), [0, 0, allowed_time]);
-    return format!("Successfully added process {}", name);
+    return format!("Success: {} added.", name);
 }
 
 #[tauri::command(rename_all = "snake_case")]
 fn remove_app(name: &str) -> String {
     let mut data = DATA.lock().unwrap();
-    if !data.contains_key(name) { return format!("Error: {} not in our system", name) }
     data.remove(name);
-    return format!("Successfully removed process {}", name);
+    return format!("Success: {} removed.", name);
 }
 
 #[tauri::command(rename_all = "snake_case")]

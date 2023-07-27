@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
 import AppList from './components/AppList';
-import AddApp from './components/AddModal';
+import AddModal from './components/AddModal';
 
 function App() {
   const [list, setList] = useState<string[]>([]);
@@ -28,7 +28,8 @@ function App() {
 
   return (
     <>
-      <AddApp add_app={add_app}/>
+      <AddModal add_app={add_app}/>
+      <p>{status}</p>
       <hr />
       <AppList list={list} edit_app={edit_app} remove_app={remove_app}/>
     </>
