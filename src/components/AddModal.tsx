@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Button, Input, TimePicker } from 'antd';
+import { useState } from "react";
+import { Button, Modal, Input, TimePicker } from 'antd';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -7,8 +7,17 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 dayjs.extend(customParseFormat);
 
 function AddModal({add_app}: {add_app: (name: String, allowed: number) => Promise<void>}) {
+    const [open, setOpen] = useState(false);  
     const [name, setName] = useState("");
     const [allowed, setAllowed] = useState(0);
+
+    const showModal = () => {
+      setOpen(true);
+    };
+
+    const closeModal = () => {
+      setOpen(false);
+    }
 
     const getSeconds = (time: Dayjs | null, timeString: string) => {
         if (time === null) return;
@@ -21,22 +30,35 @@ function AddModal({add_app}: {add_app: (name: String, allowed: number) => Promis
     }
 
     return (
+      <>
+      <Button type="primary" onClick={showModal}>
+        Add Application
+      </Button>
+      <Modal
+      open={open}
+      title="Add Application"
+      onCancel={closeModal}
+      footer={[]}
+
+      >
         <form
         className="row"
         onSubmit={(e) => {
           e.preventDefault();
           add_app(name, allowed);
+          closeModal();
           console.log("Form submitted");
         }}
       >
-        <Input 
+        <Input
           style={{ width: '30%' }}
           id="name-input"
+          autoComplete="off"
           onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
+          placeholder="App name..."
         />
         <TimePicker
-          style={{ width: '15%', margin: '0px 10px 0px 10px'}} 
+          style={{ width: '22%', margin: '0px 10px 0px 10px'}} 
           id="time-picker"
           onChange={getSeconds}
         />
@@ -44,6 +66,8 @@ function AddModal({add_app}: {add_app: (name: String, allowed: number) => Promis
         type="default" 
         htmlType="submit">Add</Button>
       </form>
+      </Modal>
+      </>
     );
 
 }
