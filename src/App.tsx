@@ -5,7 +5,6 @@ import AppList from './components/AppList';
 import AddApp from './components/AddModal';
 
 function App() {
-  const [status, setStatus] = useState("");
   const [list, setList] = useState<string[]>([]);
 
 
@@ -16,11 +15,11 @@ function App() {
     }, [add_app, remove_app]);
 
   async function add_app(name: String, allowed: number) {
-    setStatus(await invoke("add_app", { name: name, allowed_time: allowed }));
+    return await invoke("add_app", { name: name, allowed_time: allowed });
   }
 
   async function remove_app(name: String) {
-    setStatus(await invoke("remove_app", {name}));
+    return await invoke("remove_app", {name});
   }
 
   async function edit_app(name: String) {
@@ -30,7 +29,6 @@ function App() {
   return (
     <>
       <AddApp add_app={add_app}/>
-      <p>{status}</p>
       <hr />
       <AppList list={list} edit_app={edit_app} remove_app={remove_app}/>
     </>

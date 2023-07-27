@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import type { ColumnsType } from 'antd/es/table';
 import { IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -7,7 +6,7 @@ import { Progress, Space, Table } from 'antd';
 import { processToObject, strokeColor } from "../helpers";
 
 
-function AppList({list, edit_app, remove_app}: {list: string[], edit_app: (name: String) => Promise<void>, remove_app: (name: String) => Promise<void>}) {
+function AppList({list, edit_app, remove_app}: {list: string[], edit_app: (name: String) => Promise<unknown>, remove_app: (name: String) => Promise<unknown>}) {
     interface DataType {
         key: string;
         name: string;

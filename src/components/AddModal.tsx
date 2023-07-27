@@ -1,16 +1,42 @@
 import { useState } from "react";
-import { Button, Modal, Input, TimePicker } from 'antd';
-import type { Dayjs } from 'dayjs';
+import { Button, Modal, Input, message, Space } from 'antd';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import TimeInput from "./TimeInput";
 
 dayjs.extend(customParseFormat);
 
-function AddModal({add_app}: {add_app: (name: String, allowed: number) => Promise<void>}) {
+function AddModal({add_app}: {add_app: (name: String, allowed: number) => Promise<unknown>}) {
     const [open, setOpen] = useState(false);  
     const [name, setName] = useState("");
     const [allowed, setAllowed] = useState(0);
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const success = (result: string) => {
+      messageApi.open({
+        type: 'success',
+        content: result,
+        duration: 3
+      });
+    };
+    const error = (result: string) => {
+      messageApi.open({
+        type: 'error',
+        content: result,
+        duration: 3
+      });
+    };
+    
+    async function onClickHandler() {
+      const result = String(await add_app(name, allowed));
+      if (result.startsWith('Error')) {
+        error(result)
+      }
+      else {
+        success(result);
+        closeModal();
+      }
+    }
 
     const showModal = () => {
       setOpen(true);
@@ -20,37 +46,23 @@ function AddModal({add_app}: {add_app: (name: String, allowed: number) => Promis
       setOpen(false);
     }
 
-    const getSeconds = (time: Dayjs | null, timeString: string) => {
-        if (time === null) return;
-        let total = 0;
-        const timeArray = timeString.split(':');
-        total += Number(timeArray[0]) * 3600;
-        total += Number(timeArray[1]) * 60;
-        total += Number(timeArray[2]);
-        setAllowed(total);
-    }
-
     return (
       <>
       <Button type="primary" onClick={showModal}>
         Add Application
       </Button>
       <Modal
-      open={open}
-      title="Add Application"
-      onCancel={closeModal}
-      footer={[]}
-
-      >
+        open={open}
+        title="Add Application"
+        onCancel={closeModal}
+        footer={[]}>
         <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          add_app(name, allowed);
-          closeModal();
-          console.log("Form submitted");
-        }}
-      >
+          className="row"
+          onSubmit={(e) => {
+            e.preventDefault();
+            add_app(name, allowed);
+            console.log("Form submitted");
+          }}>
         <Input
           style={{ width: '30%' }}
           id="name-input"
@@ -59,10 +71,12 @@ function AddModal({add_app}: {add_app: (name: String, allowed: number) => Promis
           placeholder="App name..."
         />
         <TimeInput setAllowed={setAllowed}/>
-        <Button
-        type="default" 
-        htmlType="submit">Add</Button>
-      </form>
+          {contextHolder}
+          <Button
+            type="default" 
+            htmlType="submit"
+            onClick={onClickHandler}>Add</Button>
+        </form>
       </Modal>
       </>
     );
