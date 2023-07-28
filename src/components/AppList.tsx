@@ -101,18 +101,19 @@ function AppList({list, edit_app, remove_app}: {list: string[], edit_app: (name:
       <>
         <Table columns={columns} dataSource={processToObject(list)} pagination={{ pageSize: 5}}/>
 
-        <Modal
+      <Modal
         open={open}
         title="Edit Limit"
         onCancel={closeModal}
+        width={375}
         footer={[]}>
-          <TimeInput setAllowed={setAllowed}/>
-          <Button
-            type="default" 
-            htmlType="submit"
-            onClick={handleEdit}>
-              Submit
-          </Button>
+        <TimeInput setAllowed={setAllowed}/>
+        <Button
+          type="default" 
+          htmlType="submit"
+          onClick={handleEdit}>
+            Submit
+        </Button>
       </Modal>
     </>
     );

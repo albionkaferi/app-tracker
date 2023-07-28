@@ -35,13 +35,13 @@ function AddModal({add_app}: {add_app: (name: string, allowed: number) => Promis
       <Modal
         className="modal-form"
         open={open}
-        title="Add Application"
+        title="Add Limit"
         onCancel={closeModal}
         footer={[]}
       >
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <Input
-            style={{ width: '30%' }}
+            style={{ width: '40%' }}
             id="name-input"
             autoComplete="off"
             onChange={(e) => setName(e.currentTarget.value)}
