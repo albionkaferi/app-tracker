@@ -3,8 +3,8 @@ import type { ColumnsType } from 'antd/es/table';
 import { IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
-import { Button, Modal, Progress, Space, Table, message } from 'antd';
-import { processToObject, strokeColor } from "../helpers";
+import { Button, Modal, Progress, Space, Table } from 'antd';
+import { error, processToObject, strokeColor, success } from "../helpers";
 import TimeInput from './TimeInput';
 
 interface DataType {
@@ -20,22 +20,6 @@ function AppList({list, edit_app, remove_app}: {list: string[], edit_app: (name:
     const [open, setOpen] = useState(false);  
     const [name, setName] = useState("");
     const [allowed, setAllowed] = useState(0);
-    const [messageApi, contextHolder] = message.useMessage();
-
-    const success = (result: string) => {
-      messageApi.open({
-        type: 'success',
-        content: result,
-        duration: 3
-      });
-    };
-    const error = (result: string) => {
-      messageApi.open({
-        type: 'error',
-        content: result,
-        duration: 3
-      });
-    };
 
     const showModal = (name: string) => {
       setName(name);
@@ -119,7 +103,6 @@ function AppList({list, edit_app, remove_app}: {list: string[], edit_app: (name:
         onCancel={closeModal}
         footer={[]}>
           <TimeInput setAllowed={setAllowed}/>
-          {contextHolder}
           <Button
             type="default" 
             htmlType="submit"

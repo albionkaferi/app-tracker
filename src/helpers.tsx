@@ -1,3 +1,6 @@
+import { message } from 'antd';
+import { MessageType } from 'antd/es/message/interface';
+
 export const strokeColor = (percent: number) => {
     switch (true) {
       case percent <= 10:
@@ -38,4 +41,27 @@ export function processToObject(list: string[]) {
     })
 }
 
+// Custom success function to display success messages
+export function success(result: string) {
+  message.success(result, 3) as MessageType;
+}
 
+// Custom error function to display error messages
+export function error(result: string) {
+  message.error(result, 3) as MessageType;
+}
+
+const formatTwoDigits = (num: number)  => {
+  return String(num).padStart(2, '0');
+}
+
+export const secondsToTimeString = (seconds: number) => {
+
+  const numHours: String = formatTwoDigits(Math.floor(seconds/3600));
+  seconds %= 3600;
+  const numMinutes: String = formatTwoDigits(Math.floor(seconds/60));
+  seconds %= 60;
+  const numSeconds: String = formatTwoDigits(seconds);
+
+  return `${numHours}:${numMinutes}:${numSeconds}`;
+}

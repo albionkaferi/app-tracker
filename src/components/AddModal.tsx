@@ -1,27 +1,12 @@
 import { useState } from "react";
-import { Button, Modal, Input, message } from 'antd';
+import { Button, Modal, Input} from 'antd';
 import TimeInput from "./TimeInput";
+import { error, success } from "../helpers";
 
 function AddModal({add_app}: {add_app: (name: String, allowed: number) => Promise<unknown>}) {
     const [open, setOpen] = useState(false);  
     const [name, setName] = useState("");
     const [allowed, setAllowed] = useState(0);
-    const [messageApi, contextHolder] = message.useMessage();
-
-    const success = (result: string) => {
-      messageApi.open({
-        type: 'success',
-        content: result,
-        duration: 3
-      });
-    };
-    const error = (result: string) => {
-      messageApi.open({
-        type: 'error',
-        content: result,
-        duration: 3
-      });
-    };
     
     async function onClickHandler() {
       const result = String(await add_app(name, allowed));
@@ -60,7 +45,6 @@ function AddModal({add_app}: {add_app: (name: String, allowed: number) => Promis
           placeholder="App name..."
         />
         <TimeInput setAllowed={setAllowed}/>
-        {contextHolder}
         <Button
           type="default" 
           htmlType="submit"
