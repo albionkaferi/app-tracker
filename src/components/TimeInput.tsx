@@ -30,9 +30,9 @@ function TimeInput({setAllowed}: {setAllowed: (seconds: number) => void }) {
   
   return (
     <>
-      <InputNumber min={min} max={23} onChange={onHoursChange} />
-      <InputNumber min={min} max={59} onChange={onMinutesChange} />
-      <InputNumber min={min} max={59} onChange={onSecondsChange} />
+      <InputNumber placeholder='Hours' min={min} max={23} onChange={onHoursChange} />
+      <InputNumber placeholder='Minutes' min={min} max={59} onChange={onMinutesChange} />
+      <InputNumber placeholder='Seconds' min={min} max={59} onChange={onSecondsChange} />
     </>
   );
 }
