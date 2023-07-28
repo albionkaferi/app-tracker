@@ -1,36 +1,38 @@
+import { useRef } from 'react';
 import { InputNumber } from 'antd';
 
 const min = 0;
 const defaultValue = 0;
-let times: number[] = [defaultValue, defaultValue, defaultValue]
 
 function TimeInput({setAllowed}: {setAllowed: (seconds: number) => void }) {
+  const times = useRef([defaultValue, defaultValue, defaultValue]);
+
   const calculateAndSetAllowed = () => {
     let total = 0;
-    total += times[0] * 3600;
-    total += times[1] * 60;
-    total += times[2];
+    total += times.current[0] * 3600;
+    total += times.current[1] * 60;
+    total += times.current[2];
     setAllowed(total);
   };
   
-  
   const onHoursChange = (value: number | null) => {
-    times[0] = Number(value);
+    times.current[0] = Number(value);
     calculateAndSetAllowed();
   };
   const onMinutesChange = (value: number | null) => {
-    times[1] = Number(value);
+    times.current[1] = Number(value);
     calculateAndSetAllowed();
   };
   const onSecondsChange = (value: number | null) => {
-    times[2] = Number(value);
+    times.current[2] = Number(value);
     calculateAndSetAllowed();
   };
+  
   return (
     <>
-    <InputNumber min={min} max={23} onChange={onHoursChange} />
-    <InputNumber min={min} max={59} onChange={onMinutesChange} />
-    <InputNumber min={min} max={59} onChange={onSecondsChange} />
+      <InputNumber min={min} max={23} onChange={onHoursChange} />
+      <InputNumber min={min} max={59} onChange={onMinutesChange} />
+      <InputNumber min={min} max={59} onChange={onSecondsChange} />
     </>
   );
 }
