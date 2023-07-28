@@ -33,7 +33,7 @@ export function processToObject(list: string[]) {
       const curr_time: number = Number(process[1][1]);
       const allowed_time: number = Number(process[1][2]);
       const total_time: number = (past_time + curr_time < allowed_time) ? past_time + curr_time :  allowed_time;
-      
+
       return {
       key: process[0],
       name: process[0],
@@ -58,7 +58,7 @@ const formatTwoDigits = (num: number)  => {
   return String(num).padStart(2, '0');
 }
 
-const secondsToTimeString = (seconds: number) => {
+export const secondsToTimeString = (seconds: number) => {
 
   const numHours: String = formatTwoDigits(Math.floor(seconds/3600));
   seconds %= 3600;

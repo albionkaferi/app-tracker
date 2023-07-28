@@ -3,13 +3,13 @@ import { Button, Modal, Input} from 'antd';
 import TimeInput from "./TimeInput";
 import { error, success } from "../helpers";
 
-function AddModal({add_app}: {add_app: (name: String, allowed: number) => Promise<unknown>}) {
+function AddModal({add_app}: {add_app: (name: string, allowed: number) => Promise<string>}) {
     const [open, setOpen] = useState(false);  
     const [name, setName] = useState("");
     const [allowed, setAllowed] = useState(0);
     
     async function onClickHandler() {
-      const result = String(await add_app(name, allowed));
+      const result: string = await add_app(name, allowed);
       if (result.startsWith('Error')) {
         error(result)
       }
@@ -30,7 +30,7 @@ function AddModal({add_app}: {add_app: (name: String, allowed: number) => Promis
     return (
       <>
       <Button type="primary" onClick={showModal}>
-        Add Application
+        Add Limit
       </Button>
       <Modal
       open={open}

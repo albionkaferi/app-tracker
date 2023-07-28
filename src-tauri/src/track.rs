@@ -22,7 +22,7 @@ pub fn track_processes(data: Arc<Mutex<HashMap<String, [u64; 3]>>>) {
 
     loop {
 
-        sys.refresh_all();
+        sys.refresh_processes();
         
         // iterate through all the processes
         for (pid, process) in sys.processes() {

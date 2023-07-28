@@ -35,18 +35,18 @@ fn remove_app(name: &str) -> String {
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn edit_app(name: &str, allowed_time: u64) -> String {
+fn edit_app(name: &str, allowed_time: u64) -> (String, u64) {
     let mut data = DATA.lock().unwrap();
     let time_array = match data.get_mut(name) {
         Some(array) => array,
-        None => return format!("Error: internal error.")
+        None => return (format!("Error: internal error."), 0)
     };
     let total = time_array[0] + time_array[1];
     if allowed_time < total {
-        return format!("Error: allowed time cannot be under current usage time ({}s).", total)
+        return (format!("Error: allowed time cannot be under current usage time"), total)
     } 
     time_array[2] = allowed_time;
-    return format!("Success: allowed time for {} updated to {}", name, allowed_time);
+    return (format!("Success: allowed time for {} updated", name), allowed_time)
 }
 
 #[tauri::command(rename_all = "snake_case")]

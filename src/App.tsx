@@ -14,15 +14,15 @@ function App() {
       });
     }, [add_app, remove_app]);
 
-  async function add_app(name: String, allowed: number) {
+  async function add_app(name: string, allowed: number): Promise<string> {
     return await invoke("add_app", { name: name, allowed_time: allowed });
   }
 
-  async function remove_app(name: String) {
+  async function remove_app(name: string): Promise<string> {
     return await invoke("remove_app", {name});
   }
 
-  async function edit_app(name: String, allowed: number) {
+  async function edit_app(name: string, allowed: number): Promise<[string, number]> {
     return await invoke("edit_app", {name: name, allowed_time: allowed});
   }
 

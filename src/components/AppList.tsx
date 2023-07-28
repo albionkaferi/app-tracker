@@ -6,6 +6,7 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import { Button, Modal, Progress, Space, Table } from 'antd';
 import { error, processToObject, strokeColor, success } from "../helpers";
 import TimeInput from './TimeInput';
+import { secondsToTimeString } from '../helpers';
 
 interface DataType {
   key: string;
@@ -16,7 +17,7 @@ interface DataType {
 }
 
 
-function AppList({list, edit_app, remove_app}: {list: string[], edit_app: (name: String, allowed: number) => Promise<unknown>, remove_app: (name: String) => Promise<unknown>}) {
+function AppList({list, edit_app, remove_app}: {list: string[], edit_app: (name: string, allowed: number) => Promise<[string, number]>, remove_app: (name: string) => Promise<string>}) {
     const [open, setOpen] = useState(false);  
     const [name, setName] = useState("");
     const [allowed, setAllowed] = useState(0);
@@ -31,11 +32,14 @@ function AppList({list, edit_app, remove_app}: {list: string[], edit_app: (name:
     }
 
     const handleEdit = async () => {
-      const result: string = String(await edit_app(name, allowed));
-      if (result.startsWith("Error")) {
-        error(result);
+      const result = await edit_app(name, allowed);
+      const resultString: string = result[0];
+      const resultNumber: number = result[1];
+      const messageToUser: string = `${resultString} [${secondsToTimeString(resultNumber)}]`;
+      if (resultString.startsWith("Error")) {
+        error(messageToUser);
       } else {
-        success(result);
+        success(messageToUser);
         closeModal();
       }
     }
@@ -50,21 +54,21 @@ function AppList({list, edit_app, remove_app}: {list: string[], edit_app: (name:
         sorter: (a: DataType, b: DataType) => a.name.localeCompare(b.name)
       },
       {
-        title: 'Total',
+        title: 'Usage',
         dataIndex: 'total',
         align: 'center',
         key: 'total',
         sorter: (a: DataType, b: DataType) => Number(a.total) - Number(b.total),
       },
       {
-        title: 'Allowed',
+        title: 'Limit',
         dataIndex: 'allowed',
         align: 'center',
         key: 'allowed',
         sorter: (a: DataType, b: DataType) => Number(a.allowed) - Number(b.allowed),
       },
       {
-        title: 'Progress',
+        title: '% Used',
         dataIndex: 'progress',      
         align: 'center',
         key: 'progress',
@@ -99,7 +103,7 @@ function AppList({list, edit_app, remove_app}: {list: string[], edit_app: (name:
 
         <Modal
         open={open}
-        title="Add Application"
+        title="Edit Limit"
         onCancel={closeModal}
         footer={[]}>
           <TimeInput setAllowed={setAllowed}/>
