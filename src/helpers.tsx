@@ -29,16 +29,19 @@ export const strokeColor = (percent: number) => {
 
 export function processToObject(list: string[]) {
     return list.map((process) => {
-        const total: string = (process[1][0] + process[1][1] < process[1][2]) ? process[1][0] + process[1][1] :  process[1][2];
-        const allowed: string = process[1][2];
-        return {
-        key: process[0],
-        name: process[0],
-        total: total,
-        allowed: allowed,
-        progress: Math.trunc(Number(total) / Number(allowed) * 100),
-        }
-    })
+      const past_time: number = Number(process[1][0]);
+      const curr_time: number = Number(process[1][1]);
+      const allowed_time: number = Number(process[1][2]);
+      const total_time: number = (past_time + curr_time < allowed_time) ? past_time + curr_time :  allowed_time;
+      
+      return {
+      key: process[0],
+      name: process[0],
+      total: secondsToTimeString(total_time),
+      allowed: secondsToTimeString(allowed_time),
+      progress: Math.trunc((total_time / allowed_time) * 100),
+    }
+  })
 }
 
 // Custom success function to display success messages
@@ -55,7 +58,7 @@ const formatTwoDigits = (num: number)  => {
   return String(num).padStart(2, '0');
 }
 
-export const secondsToTimeString = (seconds: number) => {
+const secondsToTimeString = (seconds: number) => {
 
   const numHours: String = formatTwoDigits(Math.floor(seconds/3600));
   seconds %= 3600;
