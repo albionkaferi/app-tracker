@@ -39,6 +39,11 @@
   justify-content: center;
 }
 
+:where(.css-dev-only-do-not-override-txh9fw).ant-input-number .ant-input-number-input {
+  padding-left: 7px;
+  padding-right: 7px;
+}
+
 a {
   font-weight: 500;
   color: #646cff;

@@ -30,9 +30,9 @@ function TimeInput({setAllowed}: {setAllowed: (seconds: number) => void }) {
   
   return (
     <>
-      <InputNumber addonAfter={'H'} controls={false} min={min} max={23} onChange={onHoursChange} style={{width: "4.8em", margin: "0 1px 0 0.5em"}}/>
-      <InputNumber addonAfter={'M'} controls={false} min={min} max={59} onChange={onMinutesChange} style={{width: "5em", margin: "0 1px 0 1px"}} />
-      <InputNumber addonAfter={'S'} controls={false} min={min} max={59} onChange={onSecondsChange} style={{width: "4.6em", margin: "0 0.5em 0 1px"}} />
+      <InputNumber addonAfter={'H'} controls={false} min={min} max={23} onChange={onHoursChange} style={{width: "72px", margin: "0 1px 0 0.5em", paddingLeft: "0"}}/>
+      <InputNumber addonAfter={'M'} controls={false} min={min} max={59} onChange={onMinutesChange} style={{width: "75px", margin: "0 1px 0 1px"}} />
+      <InputNumber addonAfter={'S'} controls={false} min={min} max={59} onChange={onSecondsChange} style={{width: "70px", margin: "0 0.5em 0 1px"}} />
     </>
   );
 }
