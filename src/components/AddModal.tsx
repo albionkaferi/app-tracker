@@ -33,24 +33,29 @@ function AddModal({add_app}: {add_app: (name: String, allowed: number) => Promis
         Add Application
       </Button>
       <Modal
-      open={open}
-      title="Add Application"
-      onCancel={closeModal}
-      footer={[]}>
-        <Input
-          style={{ width: '30%' }}
-          id="name-input"
-          autoComplete="off"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="App name..."
-        />
-        <TimeInput setAllowed={setAllowed}/>
-        <Button
-          type="default" 
-          htmlType="submit"
-          onClick={onClickHandler}>
+        className="modal-form"
+        open={open}
+        title="Add Application"
+        onCancel={closeModal}
+        footer={[]}
+      >
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Input
+            style={{ width: '30%' }}
+            id="name-input"
+            autoComplete="off"
+            onChange={(e) => setName(e.currentTarget.value)}
+            placeholder="App name..."
+          />
+          <TimeInput setAllowed={setAllowed} />
+          <Button
+            type="default"
+            htmlType="submit"
+            onClick={onClickHandler}
+          >
             Add
-        </Button>
+          </Button>
+        </div>
       </Modal>
       </>
     );
