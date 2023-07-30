@@ -46,6 +46,7 @@ function AddModal({add_app}: {add_app: (name: string, allowed: number) => Promis
             autoComplete="off"
             onChange={(e) => setName(e.currentTarget.value)}
             placeholder="App name..."
+            suffix=".exe"
           />
           <TimeInput setAllowed={setAllowed} />
           <Button
