@@ -6,6 +6,7 @@ use std::thread;
 use track::track_processes;
 use std::sync::{Arc, Mutex};
 use std::collections::HashMap;
+use tauri::{CustomMenuItem, SystemTray, SystemTrayMenu, SystemTrayEvent, Manager};
 
 use lazy_static::lazy_static;
 
@@ -58,6 +59,14 @@ fn retrieve_data() -> Vec<(String, [u64; 3])> {
 
 
 fn main() {
+    
+    let open = CustomMenuItem::new("open".to_string(), "Open");
+    let quit = CustomMenuItem::new("quit".to_string(), "Quit");
+    let tray_menu = SystemTrayMenu::new()
+        .add_item(open)
+        .add_item(quit);
+
+    let system_tray = SystemTray::new().with_menu(tray_menu);
 
     // create a clone of the hash map and create a new thread that runs the tracking loop
     let data_clone = Arc::clone(&DATA);
@@ -65,8 +74,47 @@ fn main() {
         track_processes(data_clone);
     });
 
+    
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![add_app, remove_app, edit_app, retrieve_data])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+    .on_window_event(|event| match event.event() {
+        tauri::WindowEvent::CloseRequested { api, .. } => {
+          event.window().hide().unwrap();
+          api.prevent_close();
+        }
+        _ => {}
+    })
+    .system_tray(system_tray)
+    .on_system_tray_event(|app, event| match event {
+        SystemTrayEvent::LeftClick {
+            position: _,
+            size: _,
+            ..
+        } => {
+            let window = app.get_window("main").unwrap();
+            window.show().unwrap();
+        }
+        SystemTrayEvent::MenuItemClick { id, .. } => {
+            match id.as_str() {
+                "open" => {
+                    let window = app.get_window("main").unwrap();
+                    window.show().unwrap();
+                },
+                "quit" => {
+                    std::process::exit(0);
+                },
+                _ => {}
+            }
+        }
+        _ => {}
+    })
+    .invoke_handler(tauri::generate_handler![add_app, remove_app, edit_app, retrieve_data])
+    .build(tauri::generate_context!())
+    .expect("error while building tauri application")
+    .run(|_app_handle, event| match event {
+        tauri::RunEvent::ExitRequested { api, .. } => {
+            api.prevent_exit();
+        }
+        _ => {}
+    });
+
 }
