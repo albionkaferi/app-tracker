@@ -42,6 +42,9 @@ pub fn track_processes(data: Arc<Mutex<HashMap<String, [u64; 3]>>>) {
                 // end the process if its total time is greater than its allowed time
                 if past_time + curr_time >= allowed_time {
                     process.kill();
+                    if process.run_time() + past_time > allowed_time {
+                        time_array[1] = allowed_time - past_time;
+                    }
                 } else {
                     println!("PID: {} | Name: {} | Past Time {} | Current Time: {} | Allowed Time: {}", pid, process.name(), past_time, curr_time, allowed_time);
                     visited.insert(process.name().to_owned());

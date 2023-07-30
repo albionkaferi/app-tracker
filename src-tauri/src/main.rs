@@ -43,8 +43,8 @@ fn edit_app(name: &str, allowed_time: u64) -> (String, u64) {
         None => return (format!("Error: internal error."), 0)
     };
     let total = time_array[0] + time_array[1];
-    if allowed_time < total {
-        return (format!("Error: allowed time cannot be under current usage time"), total)
+    if allowed_time <= total {
+        return (format!("Error: new time must be greater than current usage time"), total)
     } 
     time_array[2] = allowed_time;
     return (format!("Success: allowed time for {} updated", name), allowed_time)
@@ -74,7 +74,7 @@ fn main() {
         track_processes(data_clone);
     });
 
-    
+
     tauri::Builder::default()
     .on_window_event(|event| match event.event() {
         tauri::WindowEvent::CloseRequested { api, .. } => {

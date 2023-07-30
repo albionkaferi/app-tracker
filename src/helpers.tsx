@@ -32,8 +32,7 @@ export function processToObject(list: string[]) {
       const past_time: number = Number(process[1][0]);
       const curr_time: number = Number(process[1][1]);
       const allowed_time: number = Number(process[1][2]);
-      const total_time: number = (past_time + curr_time < allowed_time) ? past_time + curr_time :  allowed_time;
-
+      const total_time: number = past_time + curr_time;
       return {
       key: process[0],
       name: process[0],
