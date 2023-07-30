@@ -51,7 +51,7 @@ function AddModal({add_app}: {add_app: (name: string, allowed: number) => Promis
             style={{width: "32%"}}
             id="app-input"
             autoComplete="off"
-            onChange={(e) => setName(`${e.currentTarget.value}.exe`)}
+            onChange={(e) => setName(e.currentTarget.value)}
             placeholder="App name..."
             value={name}
             suffix=".exe"
