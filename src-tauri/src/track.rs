@@ -41,7 +41,11 @@ pub fn track_processes(data: Arc<Mutex<HashMap<String, [u64; 3]>>>) {
                 time_array[1] = process.run_time();
                 // end the process if its total time is greater than its allowed time
                 if past_time + curr_time >= allowed_time {
-                    process.kill();
+                    // kill all the processes with the name we want to kill 
+                    for same_processes in sys.processes_by_exact_name(process.name()) {
+                        same_processes.kill();
+                    }
+                    // to ensure that total time is at most allowed time
                     if process.run_time() + past_time > allowed_time {
                         time_array[1] = allowed_time - past_time;
                     }
