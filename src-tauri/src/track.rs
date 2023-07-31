@@ -35,10 +35,10 @@ pub fn track_processes(data: Arc<Mutex<HashMap<String, [u64; 3]>>>) {
                     Some(array) => array,
                     None => continue
                 };
+                time_array[1] = process.run_time();
                 let allowed_time = time_array[2];
                 let curr_time = time_array[1];
                 let past_time = time_array[0];
-                time_array[1] = process.run_time();
                 // end the process if its total time is greater than its allowed time
                 if past_time + curr_time >= allowed_time {
                     // kill all the processes with the name we want to kill 
