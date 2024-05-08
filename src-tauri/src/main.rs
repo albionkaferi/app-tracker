@@ -21,22 +21,26 @@ lazy_static! {
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn add_app(name: &str, allowed_time: u64) -> String {
+fn add_app(app: tauri::AppHandle, name: &str, allowed_time: u64) -> String {
     let mut data = DATA.lock().unwrap();
     if data.contains_key(name) { return format!("Error: {} is already added.", name) }
     data.insert(String::from(name), [0, 0, allowed_time]);
+    let array: Vec<(String, [u64; 3])> = data.clone().into_iter().collect();
+    let _ = app.emit_all("changed", array);
     return format!("Success: {} added.", name);
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn remove_app(name: &str) -> String {
+fn remove_app(app: tauri::AppHandle, name: &str) -> String {
     let mut data = DATA.lock().unwrap();
     data.remove(name);
+    let array: Vec<(String, [u64; 3])> = data.clone().into_iter().collect();
+    let _ = app.emit_all("changed", array);
     return format!("Success: {} removed.", name);
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn edit_app(name: &str, allowed_time: u64) -> (String, u64) {
+fn edit_app(app: tauri::AppHandle, name: &str, allowed_time: u64) -> (String, u64) {
     let mut data = DATA.lock().unwrap();
     let time_array = match data.get_mut(name) {
         Some(array) => array,
@@ -47,6 +51,8 @@ fn edit_app(name: &str, allowed_time: u64) -> (String, u64) {
         return (format!("Error: new time must be greater than current usage time"), total)
     } 
     time_array[2] = allowed_time;
+    let array: Vec<(String, [u64; 3])> = data.clone().into_iter().collect();
+    let _ = app.emit_all("changed", array);
     return (format!("Success: allowed time for {} updated", name), allowed_time)
 }
 
@@ -67,15 +73,17 @@ fn main() {
         .add_item(quit);
 
     let system_tray = SystemTray::new().with_menu(tray_menu);
-
-    // create a clone of the hash map and create a new thread that runs the tracking loop
-    let data_clone = Arc::clone(&DATA);
-    thread::spawn(move || {
-        track_processes(data_clone);
-    });
-
-
+    
     tauri::Builder::default()
+    .setup(move |app| {
+        let app_handle = app.app_handle();
+        let data_clone = Arc::clone(&DATA);
+        let app_handle_clone = app_handle.clone();
+        thread::spawn(move || {
+            track_processes(data_clone, app_handle_clone);
+        });
+        Ok(())
+    })
     .on_window_event(|event| match event.event() {
         tauri::WindowEvent::CloseRequested { api, .. } => {
           event.window().hide().unwrap();

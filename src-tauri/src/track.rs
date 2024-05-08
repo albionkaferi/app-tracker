@@ -1,11 +1,12 @@
 use sysinfo::{System, SystemExt, ProcessExt};
+use tauri::Manager;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::time::{Duration, Instant};
 use std::thread;
 use std::sync::{Arc, Mutex};
 
-pub fn track_processes(data: Arc<Mutex<HashMap<String, [u64; 3]>>>) {
+pub fn track_processes(data: Arc<Mutex<HashMap<String, [u64; 3]>>>, app_handle: tauri::AppHandle) {
     /* 
     * visited is used to keep track of which processes are visited when iterating through the list of processes
     * this prevents duplicate operations for processes with the same name
@@ -23,11 +24,11 @@ pub fn track_processes(data: Arc<Mutex<HashMap<String, [u64; 3]>>>) {
     loop {
 
         sys.refresh_processes();
+
+        let mut data = data.lock().unwrap();
         
-        // iterate through all the processes
+        let mut changed = false;
         for (pid, process) in sys.processes() {
-            // lock access to the hash map and unwrap it
-            let mut data = data.lock().unwrap();
             // if the process is one we want to track and it hasn't been visited already
             if data.contains_key(process.name()) && !visited.contains(process.name()) {
                 let time_array = match data.get_mut(process.name()) {
@@ -39,6 +40,7 @@ pub fn track_processes(data: Arc<Mutex<HashMap<String, [u64; 3]>>>) {
                 let opened_time = open.entry(process.name().to_owned()).or_insert_with(Instant::now);
                 let curr_time = Instant::now().duration_since(*opened_time).as_secs();
                 time_array[1] = curr_time;
+                changed = true;
                 // end the process if its total time is greater than its allowed time
                 if past_time + curr_time >= allowed_time {
                     // kill all the processes with the name we want to kill 
@@ -62,7 +64,6 @@ pub fn track_processes(data: Arc<Mutex<HashMap<String, [u64; 3]>>>) {
         for (process, opened_time) in &open_clone {
             if !visited.contains(process) {
                 // lock access to the hash map and unwrap it
-                let mut data = data.lock().unwrap();
                 let time_array = match data.get_mut(process) {
                     Some(array) => array,
                     None => continue
@@ -70,11 +71,17 @@ pub fn track_processes(data: Arc<Mutex<HashMap<String, [u64; 3]>>>) {
                 let curr_time = Instant::now().duration_since(*opened_time).as_secs();
                 time_array[0] += curr_time;
                 time_array[1] = 0;
+                changed = true;
                 open.remove(process);
             }
         }
 
         visited.clear();
+        if changed {
+            let array: Vec<(String, [u64; 3])> = data.clone().into_iter().collect();
+            let _ = app_handle.emit_all("changed", array);
+        }
+        drop(data);
         thread::sleep(Duration::from_secs(1));
     }
 }
