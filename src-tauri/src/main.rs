@@ -20,7 +20,7 @@ lazy_static! {
     static ref DATA: Arc<Mutex<HashMap<String, [u64; 3]>>> = Arc::new(Mutex::new(HashMap::new()));
 }
 
-#[tauri::command(rename_all = "snake_case")]
+#[tauri::command]
 fn add_app(app: tauri::AppHandle, name: &str, allowed_time: u64) -> String {
     let mut data = DATA.lock().unwrap();
     if data.contains_key(name) { return format!("Error: {} is already added.", name) }
@@ -30,7 +30,7 @@ fn add_app(app: tauri::AppHandle, name: &str, allowed_time: u64) -> String {
     return format!("Success: {} added.", name);
 }
 
-#[tauri::command(rename_all = "snake_case")]
+#[tauri::command]
 fn remove_app(app: tauri::AppHandle, name: &str) -> String {
     let mut data = DATA.lock().unwrap();
     data.remove(name);
@@ -39,7 +39,7 @@ fn remove_app(app: tauri::AppHandle, name: &str) -> String {
     return format!("Success: {} removed.", name);
 }
 
-#[tauri::command(rename_all = "snake_case")]
+#[tauri::command]
 fn edit_app(app: tauri::AppHandle, name: &str, allowed_time: u64) -> (String, u64) {
     let mut data = DATA.lock().unwrap();
     let time_array = match data.get_mut(name) {
@@ -56,7 +56,7 @@ fn edit_app(app: tauri::AppHandle, name: &str, allowed_time: u64) -> (String, u6
     return (format!("Success: allowed time for {} updated", name), allowed_time)
 }
 
-#[tauri::command(rename_all = "snake_case")]
+#[tauri::command]
 fn retrieve_data() -> Vec<(String, [u64; 3])> {
     let data = DATA.lock().unwrap();
     let array: Vec<(String, [u64; 3])> = data.clone().into_iter().collect();

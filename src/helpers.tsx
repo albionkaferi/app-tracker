@@ -1,46 +1,46 @@
-import { message } from 'antd';
-import { MessageType } from 'antd/es/message/interface';
+import { message } from "antd";
+import { MessageType } from "antd/es/message/interface";
+import { AppDataList } from "./types";
 
 export const strokeColor = (percent: number) => {
-    switch (true) {
-      case percent <= 10:
-        return { from: '#e24768', to: '#d7415e' };
-      case percent <= 20:
-        return { from: '#d7415e', to: '#cc3b54' };
-      case percent <= 30:
-        return { from: '#cc3b54', to: '#c0354a' };
-      case percent <= 40:
-        return { from: '#c0354a', to: '#b53041' };
-      case percent <= 50:
-        return { from: '#b53041', to: '#aa2a38' };
-      case percent <= 60:
-        return { from: '#aa2a38', to: '#9f252f' };
-      case percent <= 70:
-        return { from: '#9f252f', to: '#942027' };
-      case percent <= 80:
-        return { from: '#942027', to: '#891b1f' };
-      case percent <= 90:
-        return { from: '#891b1f', to: '#7e1518' };
-      default:
-        return { from: '#7e1518', to: '#731010' };
-    }
+  switch (true) {
+    case percent <= 10:
+      return { from: "#e24768", to: "#d7415e" };
+    case percent <= 20:
+      return { from: "#d7415e", to: "#cc3b54" };
+    case percent <= 30:
+      return { from: "#cc3b54", to: "#c0354a" };
+    case percent <= 40:
+      return { from: "#c0354a", to: "#b53041" };
+    case percent <= 50:
+      return { from: "#b53041", to: "#aa2a38" };
+    case percent <= 60:
+      return { from: "#aa2a38", to: "#9f252f" };
+    case percent <= 70:
+      return { from: "#9f252f", to: "#942027" };
+    case percent <= 80:
+      return { from: "#942027", to: "#891b1f" };
+    case percent <= 90:
+      return { from: "#891b1f", to: "#7e1518" };
+    default:
+      return { from: "#7e1518", to: "#731010" };
+  }
 };
 
-
-export function processToObject(list: string[]) {
-    return list.map((process) => {
-      const past_time: number = Number(process[1][0]);
-      const curr_time: number = Number(process[1][1]);
-      const allowed_time: number = Number(process[1][2]);
-      const total_time: number = past_time + curr_time;
-      return {
+export function processToObject(list: AppDataList) {
+  return list.map((process) => {
+    const past_time: number = Number(process[1][0]);
+    const curr_time: number = Number(process[1][1]);
+    const allowed_time: number = Number(process[1][2]);
+    const total_time: number = past_time + curr_time;
+    return {
       key: process[0],
       name: process[0],
       total: secondsToTimeString(total_time),
       allowed: secondsToTimeString(allowed_time),
       progress: Math.trunc((total_time / allowed_time) * 100),
-    }
-  })
+    };
+  });
 }
 
 // Custom success function to display success messages
@@ -53,17 +53,16 @@ export function error(result: string) {
   message.error(result, 3) as MessageType;
 }
 
-const formatTwoDigits = (num: number)  => {
-  return String(num).padStart(2, '0');
-}
+const formatTwoDigits = (num: number) => {
+  return String(num).padStart(2, "0");
+};
 
 export const secondsToTimeString = (seconds: number) => {
-
-  const numHours: String = formatTwoDigits(Math.floor(seconds/3600));
+  const numHours: String = formatTwoDigits(Math.floor(seconds / 3600));
   seconds %= 3600;
-  const numMinutes: String = formatTwoDigits(Math.floor(seconds/60));
+  const numMinutes: String = formatTwoDigits(Math.floor(seconds / 60));
   seconds %= 60;
   const numSeconds: String = formatTwoDigits(seconds);
 
   return `${numHours}:${numMinutes}:${numSeconds}`;
-}
+};
